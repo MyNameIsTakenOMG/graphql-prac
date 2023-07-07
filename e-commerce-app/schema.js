@@ -9,6 +9,9 @@ const typeDefs = `
     categories: [Category!]!
     category(id: ID!): Category
   }
+  type Mutation{
+    addCategory(input: AddCategory): Category!
+  }
 
   type Product {
     id: ID!
@@ -37,6 +40,10 @@ const typeDefs = `
   input ProductsFilter{
     onSale: Boolean
     avgRating: Int
+  }
+
+  input AddCategory{
+    name: String!
   }
 `;
 
