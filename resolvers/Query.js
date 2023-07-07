@@ -9,7 +9,15 @@ const Query = {
     return true;
   },
   products: (parent, args, context) => {
-    return context.products;
+    const filter = args.filter;
+    let filteredProducts = context.products;
+
+    if (filter) {
+      if (filter.onSale === true) {
+        filteredProducts = filteredProducts.filter((product) => product.onSale);
+      }
+    }
+    return filteredProducts;
   },
   product: (parent, args, context) => {
     // console.log(args);

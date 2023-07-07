@@ -5,7 +5,7 @@ const typeDefs = `
     price: Float
     isCool: Boolean
     product(id: ID!): Product
-    products: [Product!]!
+    products(filter: ProductsFilter): [Product!]!
     categories: [Category!]!
     category(id: ID!): Category
   }
@@ -24,7 +24,7 @@ const typeDefs = `
   type Category {
     id:ID!
     name: String!
-    products: [Product!]!
+    products(filter: ProductsFilter): [Product!]!
   }
   type Review {
     id: ID!
@@ -32,6 +32,10 @@ const typeDefs = `
     title: String!
     comment: String!
     rating: Int!
+  }
+
+  input ProductsFilter{
+    onSale: Boolean
   }
 `;
 
