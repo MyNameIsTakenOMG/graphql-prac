@@ -12,7 +12,7 @@ const Query = {
     return context.products;
   },
   product: (parent, args, context) => {
-    console.log(args);
+    // console.log(args);
     const { id } = args;
     return context.products.find((product) => product.id === id);
   },

@@ -4,7 +4,7 @@ const { typeDefs } = require('../schema');
 const { Query } = require('../resolvers/Query');
 const { Category } = require('../resolvers/Category');
 const { Product } = require('../resolvers/Product');
-const { categories, products } = require('../dataFeed');
+const { categories, products, reviews } = require('../dataFeed');
 
 const resolvers = {
   Product: Product,
@@ -22,10 +22,11 @@ const start = async () => {
     listen: {
       port: 3000,
     },
-    context: {
+    context: (req, res) => ({
       categories: categories,
       products: products,
-    },
+      reviews: reviews,
+    }),
   });
 
   console.log('server started at ' + url);
