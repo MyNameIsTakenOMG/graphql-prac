@@ -1,11 +1,10 @@
 const Category = {
   products: (parent, args, context) => {
     // console.log(parent);
-    const products = context.products;
+    const { db } = context;
     const { id } = parent;
     const filter = args.filter;
-    const { reviews } = context;
-    let filteredProducts = products.filter(
+    let filteredProducts = db.products.filter(
       (product) => product.category_id === id
     );
     if (filter) {
@@ -19,7 +18,7 @@ const Category = {
           // get reviews for the product
           let sumRating = 0;
           let nums = 0;
-          reviews.forEach((review) => {
+          db.reviews.forEach((review) => {
             if (review.productId === product.id) {
               sumRating += review.rating;
               nums += 1;

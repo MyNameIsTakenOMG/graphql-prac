@@ -4,7 +4,7 @@ const { typeDefs } = require('./schema');
 const { Query } = require('./resolvers/Query');
 const { Category } = require('./resolvers/Category');
 const { Product } = require('./resolvers/Product');
-const { categories, products, reviews } = require('./dataFeed');
+const { db } = require('./dataFeed');
 const { Mutation } = require('./resolvers/Mutation');
 
 const resolvers = {
@@ -25,9 +25,7 @@ const start = async () => {
       port: 3000,
     },
     context: (req, res) => ({
-      categories: categories,
-      products: products,
-      reviews: reviews,
+      db,
     }),
   });
 

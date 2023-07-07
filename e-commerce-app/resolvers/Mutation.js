@@ -3,31 +3,45 @@ const { v4: uuidv4 } = require('uuid');
 const Mutation = {
   addCategory: (parent, args, context) => {
     const { input } = args;
-    const { categories } = context;
+    const { db } = context;
     const newCategory = {
       id: uuidv4(),
       name: input.name,
     };
-    categories.push(newCategory);
+    db.categories.push(newCategory);
     return newCategory;
   },
   addProduct: (parent, args, context) => {
-    const { products } = context;
+    const { db } = context;
     const newProduct = {
       id: uuidv4(),
       ...args.input,
     };
-    products.push(newProduct);
+    db.products.push(newProduct);
     return newProduct;
   },
   addReview: (parent, args, context) => {
-    const { reviews } = context;
+    const { db } = context;
     const newReview = {
       id: uuidv4(),
       ...args.input,
     };
-    reviews.push(newReview);
+    db.reviews.push(newReview);
     return newReview;
+  },
+  deleteCategory: (parent, args, context) => {
+    const { id } = args;
+    const { db } = context;
+    db.categories = db.categories.filter((category) => category.id !== id);
+    db.products = db.products.map((product) => {
+      if (product.category_id === id)
+        return {
+          ...product,
+          category_id: null,
+        };
+      else return product;
+    });
+    return true;
   },
 };
 

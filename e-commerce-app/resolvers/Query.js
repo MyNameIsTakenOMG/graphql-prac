@@ -10,8 +10,8 @@ const Query = {
   },
   products: (parent, args, context) => {
     const filter = args.filter;
-    let filteredProducts = context.products;
-    const { reviews } = context;
+    const { db } = context;
+    let filteredProducts = db.products;
     if (filter) {
       const { onSale, avgRating } = filter;
       if (onSale) {
@@ -23,7 +23,7 @@ const Query = {
           // get reviews for the product
           let sumRating = 0;
           let nums = 0;
-          reviews.forEach((review) => {
+          db.reviews.forEach((review) => {
             if (review.productId === product.id) {
               sumRating += review.rating;
               nums += 1;
@@ -39,14 +39,14 @@ const Query = {
   product: (parent, args, context) => {
     // console.log(args);
     const { id } = args;
-    return context.products.find((product) => product.id === id);
+    return context.db.products.find((product) => product.id === id);
   },
   categories: (parent, args, context) => {
-    return context.categories;
+    return context.db.categories;
   },
   category: (parent, args, context) => {
     const { id } = args;
-    return context.categories.find((category) => category.id === id);
+    return context.db.categories.find((category) => category.id === id);
   },
 };
 
