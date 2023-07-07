@@ -43,6 +43,13 @@ const Mutation = {
     });
     return true;
   },
+  deleteProduct: (parent, args, context) => {
+    const { id } = args;
+    const { db } = context;
+    db.products = db.products.filter((product) => product.id !== id);
+    db.reviews = db.reviews.filter((review) => review.productId !== id);
+    return true;
+  },
 };
 
 module.exports = { Mutation };
