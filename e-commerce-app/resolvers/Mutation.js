@@ -11,6 +11,24 @@ const Mutation = {
     categories.push(newCategory);
     return newCategory;
   },
+  addProduct: (parent, args, context) => {
+    const { products } = context;
+    const newProduct = {
+      id: uuidv4(),
+      ...args.input,
+    };
+    products.push(newProduct);
+    return newProduct;
+  },
+  addReview: (parent, args, context) => {
+    const { reviews } = context;
+    const newReview = {
+      id: uuidv4(),
+      ...args.input,
+    };
+    reviews.push(newReview);
+    return newReview;
+  },
 };
 
 module.exports = { Mutation };

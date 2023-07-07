@@ -10,7 +10,9 @@ const typeDefs = `
     category(id: ID!): Category
   }
   type Mutation{
-    addCategory(input: AddCategory): Category!
+    addCategory(input: AddCategoryInput!): Category!
+    addProduct(input: AddProductInput!): Product!
+    addReview(input: AddReviewInput!): Review!
   }
 
   type Product {
@@ -42,8 +44,24 @@ const typeDefs = `
     avgRating: Int
   }
 
-  input AddCategory{
+  input AddCategoryInput{
     name: String!
+  }
+  input AddProductInput{
+    name: String!
+    description: String!
+    quantity: Int!
+    price: Float!
+    image: String!
+    onSale: Boolean!
+    category_id: String!
+  }
+  input AddReviewInput{
+    date: String!
+    title: String!
+    comment: String!
+    rating: Int!
+    productId: String!
   }
 `;
 
