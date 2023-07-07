@@ -22,6 +22,7 @@ const typeDefs = `
     price: Float!
     image: String!
     onSale: Boolean!
+    category: Category
   }
   type Category {
     id:ID!
@@ -30,6 +31,12 @@ const typeDefs = `
   }
 `;
 const resolvers = {
+  Product: {
+    category: (parent, args, context) => {
+      const { category_id } = parent;
+      return categories.find((category) => category.id === category_id);
+    },
+  },
   Category: {
     products: (parent, args, context) => {
       console.log(parent);
