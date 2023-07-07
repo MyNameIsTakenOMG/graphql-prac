@@ -16,6 +16,9 @@ const typeDefs = `
     deleteCategory(id:ID!): Boolean!
     deleteProduct(id: ID!): Boolean!
     deleteReview(id: ID!): Boolean!
+    updateCategory(id: ID!, input: UpdateCategoryInput!): Category
+    updateProduct(id: ID!, input: UpdateProductInput!): Product
+    updateReview(id: ID!, input: UpdateReviewInput!): Review
   }
 
   type Product {
@@ -60,6 +63,26 @@ const typeDefs = `
     category_id: String!
   }
   input AddReviewInput{
+    date: String!
+    title: String!
+    comment: String!
+    rating: Int!
+    productId: String!
+  }
+
+  input UpdateCategoryInput{
+    name: String!
+  }
+  input UpdateProductInput{
+    name: String!
+    description: String!
+    quantity: Int!
+    price: Float!
+    image: String!
+    onSale: Boolean!
+    category_id: String
+  }
+  input UpdateReviewInput{
     date: String!
     title: String!
     comment: String!
