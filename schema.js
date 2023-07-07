@@ -36,6 +36,7 @@ const typeDefs = `
 
   input ProductsFilter{
     onSale: Boolean
+    avgRating: Int
   }
 `;
 
