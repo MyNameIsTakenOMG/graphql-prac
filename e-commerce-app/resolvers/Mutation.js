@@ -50,6 +50,12 @@ const Mutation = {
     db.reviews = db.reviews.filter((review) => review.productId !== id);
     return true;
   },
+  deleteReview: (parent, args, context) => {
+    const { id } = args;
+    const { db } = context;
+    db.reviews = db.reviews.filter((review) => review.productId !== id);
+    return true;
+  },
 };
 
 module.exports = { Mutation };
