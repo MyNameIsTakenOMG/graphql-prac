@@ -1,9 +1,4 @@
-const { products, categories } = require('../dataFeed');
-
 const Query = {
-  hello: () => {
-    return 'hello world';
-  },
   numberOfAnimals: () => {
     return [55];
   },
@@ -13,20 +8,20 @@ const Query = {
   isCool: () => {
     return true;
   },
-  products: () => {
-    return products;
+  products: (parent, args, context) => {
+    return context.products;
   },
   product: (parent, args, context) => {
     console.log(args);
     const { id } = args;
-    return products.find((product) => product.id === id);
+    return context.products.find((product) => product.id === id);
   },
-  categories: () => {
-    return categories;
+  categories: (parent, args, context) => {
+    return context.categories;
   },
   category: (parent, args, context) => {
     const { id } = args;
-    return categories.find((category) => category.id === id);
+    return context.categories.find((category) => category.id === id);
   },
 };
 
