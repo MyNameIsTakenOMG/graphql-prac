@@ -5,9 +5,14 @@ export const typeDefs = `
   }
 
   type Mutation{
-    postCreate(title: String!,content: String!):PostPayload!
+    postCreate(post: PostInput!):PostPayload!
+    postUpdate(postId:ID!,post: PostInput!):PostPayload!
   }
 
+  input PostInput {
+    title: String
+    content: String
+  }
 
 
   type Post{

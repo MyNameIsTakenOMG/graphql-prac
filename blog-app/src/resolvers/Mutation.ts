@@ -1,9 +1,11 @@
 import { Post } from '@prisma/client';
 import { Context } from '../index';
 
-interface PostCreateArgs {
-  title: string;
-  content: string;
+interface PostArgs {
+  post: {
+    title?: string;
+    content?: string;
+  };
 }
 
 interface PostPayloadType {
@@ -16,11 +18,11 @@ interface PostPayloadType {
 export const Mutation = {
   postCreate: async (
     parent: any,
-    args: PostCreateArgs,
+    args: PostArgs,
     context: Context
   ): Promise<PostPayloadType> => {
     const prisma = context.prisma;
-    const { title, content } = args;
+    const { title, content } = args.post;
     // validation
     if (!title || !content) {
       return {
@@ -39,6 +41,48 @@ export const Mutation = {
     return {
       userErrors: [],
       post: post,
+    };
+  },
+  postUpdate: async (
+    parent: any,
+    { postId, post }: { postId: string; post: PostArgs['post'] },
+    context: Context
+  ): Promise<PostPayloadType> => {
+    const { title, content } = post;
+    if (!title && !content) {
+      return {
+        userErrors: [{ message: 'title or content is required' }],
+        post: null,
+      };
+    }
+    const { prisma } = context;
+    const existingPost = await prisma.post.findUnique({
+      where: {
+        id: Number(postId),
+      },
+    });
+    if (!existingPost) {
+      return {
+        userErrors: [{ message: 'post not found' }],
+        post: null,
+      };
+    }
+    let payloadToUpdate = {
+      title,
+      content,
+    };
+    if (!title) delete payloadToUpdate.title;
+    if (!content) delete payloadToUpdate.content;
+    return {
+      userErrors: [],
+      post: await prisma.post.update({
+        data: {
+          ...payloadToUpdate,
+        },
+        where: {
+          id: Number(postId),
+        },
+      }),
     };
   },
 };
