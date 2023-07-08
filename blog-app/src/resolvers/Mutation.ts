@@ -85,4 +85,26 @@ export const Mutation = {
       }),
     };
   },
+  postDelete: async (
+    parent: any,
+    { postId }: { postId: string },
+    context: Context
+  ): Promise<PostPayloadType> => {
+    const { prisma } = context;
+    const post = await prisma.post.findUnique({
+      where: {
+        id: Number(postId),
+      },
+    });
+    if (!post)
+      return {
+        userErrors: [{ message: 'post not found' }],
+        post: null,
+      };
+    await prisma.post.delete({ where: { id: Number(postId) } });
+    return {
+      userErrors: [],
+      post: post,
+    };
+  },
 };

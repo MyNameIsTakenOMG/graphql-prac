@@ -7,6 +7,7 @@ export const typeDefs = `
   type Mutation{
     postCreate(post: PostInput!):PostPayload!
     postUpdate(postId:ID!,post: PostInput!):PostPayload!
+    postDelete(postId:ID!):PostPayload!
   }
 
   input PostInput {
