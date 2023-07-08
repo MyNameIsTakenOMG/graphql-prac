@@ -11,6 +11,24 @@ exports.typeDefs = `
     color: String!
     make: String!
   }
+
+  type MannualGroup {
+    Image
+    [GroupMembership]
+  }
+  type AutomaticGroup {
+    Image
+    [GroupMembership]
+    [AutomaticallyGroupFeatures]
+  }
+
+  type AutomaticGroupFeatures{
+  }
+
+  type GroupMembership{
+    Group
+    Car
+  }
 `;
 
 const server = new ApolloServer({
