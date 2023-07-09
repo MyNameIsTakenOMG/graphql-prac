@@ -49,6 +49,6 @@ export const typeDefs = `
 
   type AuthPayload {
     userErrors: [UserError!]!
-    user: User
+    token: String
   }
 `;

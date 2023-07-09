@@ -2,6 +2,8 @@ import { User } from '@prisma/client';
 import { Context } from '../..';
 import validator from 'validator';
 import bcrypt from 'bcrypt';
+import jwt from 'jsonwebtoken';
+import { JWT_SECRET } from '../../keys';
 
 interface SignupArgs {
   email: string;
@@ -14,7 +16,7 @@ interface UserPayload {
   userErrors: {
     message: string;
   }[];
-  user: User | null;
+  token: string | null;
 }
 
 export const authResolvers = {
@@ -30,18 +32,18 @@ export const authResolvers = {
     if (!isEmail)
       return {
         userErrors: [{ message: 'invalid email' }],
-        user: null,
+        token: null,
       };
     const isValidPassword = validator.isLength(password, { min: 5 });
     if (!isValidPassword)
       return {
         userErrors: [{ message: 'invalid password' }],
-        user: null,
+        token: null,
       };
     if (!name || !bio)
       return {
         userErrors: [{ message: 'invalid name or bio' }],
-        user: null,
+        token: null,
       };
 
     // hash the password
@@ -54,9 +56,20 @@ export const authResolvers = {
         password: hashedPassword,
       },
     });
+    // create a jwt token
+    const jwtToken = await jwt.sign(
+      {
+        userId: newUser.id,
+        email: newUser.email,
+      },
+      JWT_SECRET,
+      {
+        expiresIn: 3600000,
+      }
+    );
     return {
       userErrors: [],
-      user: newUser,
+      token: jwtToken,
     };
   },
 };
