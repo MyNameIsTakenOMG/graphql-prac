@@ -13,8 +13,12 @@
   "dependencies": {
     "@apollo/server": "^4.7.5",
     "@prisma/client": "^4.16.2",
+    "@types/bcrypt": "^5.0.0",
+    "@types/validator": "^13.7.17",
+    "bcrypt": "^5.1.0",
     "graphql": "^16.7.1",
-    "prisma": "^4.16.2"
+    "prisma": "^4.16.2",
+    "validator": "^13.9.0"
   },
   "devDependencies": {
     "@types/node": "^20.4.1",

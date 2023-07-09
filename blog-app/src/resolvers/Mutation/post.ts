@@ -1,5 +1,5 @@
 import { Post } from '@prisma/client';
-import { Context } from '../index';
+import { Context } from '../../index';
 
 interface PostArgs {
   post: {
@@ -15,7 +15,7 @@ interface PostPayloadType {
   post: Post | null;
 }
 
-export const Mutation = {
+export const postResolvers = {
   postCreate: async (
     parent: any,
     args: PostArgs,
