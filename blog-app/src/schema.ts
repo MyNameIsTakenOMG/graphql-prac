@@ -8,8 +8,8 @@ export const typeDefs = `
     postCreate(post: PostInput!):PostPayload!
     postUpdate(postId:ID!,post: PostInput!):PostPayload!
     postDelete(postId:ID!):PostPayload!
-    signup(email:String!,name: String!, password:String, bio:String!):AuthPayload!
-
+    signup(credentials: CredentialsInput!,name: String!, bio:String!):AuthPayload!
+    signin(credentials:CredentialsInput!):AuthPayload!
   }
 
   input PostInput {
@@ -50,5 +50,9 @@ export const typeDefs = `
   type AuthPayload {
     userErrors: [UserError!]!
     token: String
+  }
+  input CredentialsInput{
+    email: String!
+    password: String!
   }
 `;

@@ -1,4 +1,4 @@
-import { User } from '@prisma/client';
+import { Prisma, User } from '@prisma/client';
 import { Context } from '../..';
 import validator from 'validator';
 import bcrypt from 'bcrypt';
@@ -6,10 +6,18 @@ import jwt from 'jsonwebtoken';
 import { JWT_SECRET } from '../../keys';
 
 interface SignupArgs {
-  email: string;
+  credentials: {
+    email: string;
+    password: string;
+  };
   name: string;
   bio: string;
-  password: string;
+}
+interface SigninArgs {
+  credentials: {
+    email: string;
+    password: string;
+  };
 }
 
 interface UserPayload {
@@ -26,7 +34,8 @@ export const authResolvers = {
     context: Context
   ): Promise<UserPayload> => {
     const { prisma } = context;
-    const { email, name, bio, password } = args;
+    const { credentials, name, bio } = args;
+    const { email, password } = credentials;
     // validate the inputs
     const isEmail = validator.isEmail(email);
     if (!isEmail)
@@ -69,6 +78,46 @@ export const authResolvers = {
       {
         userId: newUser.id,
         email: newUser.email,
+      },
+      JWT_SECRET,
+      {
+        expiresIn: 3600000,
+      }
+    );
+    return {
+      userErrors: [],
+      token: jwtToken,
+    };
+  },
+  signin: async (
+    parent: any,
+    args: SigninArgs,
+    context: Context
+  ): Promise<UserPayload> => {
+    const { credentials } = args;
+    const { prisma } = context;
+    const { email, password } = credentials;
+    // validate credentials
+    const user = await prisma.user.findUnique({
+      where: {
+        email,
+      },
+    });
+    if (!user)
+      return {
+        userErrors: [{ message: 'invalid credentials' }],
+        token: null,
+      };
+    const isMatch = await bcrypt.compare(password, user.password);
+    if (!isMatch)
+      return {
+        userErrors: [{ message: 'invalid credentials' }],
+        token: null,
+      };
+    const jwtToken = await jwt.sign(
+      {
+        userId: user.id,
+        email: user.email,
       },
       JWT_SECRET,
       {
