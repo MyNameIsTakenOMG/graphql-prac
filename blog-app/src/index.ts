@@ -6,7 +6,7 @@ import { Prisma, PrismaClient } from '@prisma/client';
 import { DefaultArgs } from '@prisma/client/runtime';
 import { getUserFromToken } from './utils/getUserFromToken';
 
-const prisma = new PrismaClient();
+export const prisma = new PrismaClient();
 
 const server = new ApolloServer({
   typeDefs,
