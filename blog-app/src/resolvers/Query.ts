@@ -11,4 +11,14 @@ export const Query = {
       ],
     });
   },
+  me: async (parent: any, args: any, context: Context) => {
+    const { prisma, userInfo } = context;
+    if (!userInfo) return null;
+    else
+      return await prisma.user.findUnique({
+        where: {
+          id: userInfo.userId,
+        },
+      });
+  },
 };
