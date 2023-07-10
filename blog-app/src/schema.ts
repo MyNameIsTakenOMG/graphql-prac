@@ -20,7 +20,6 @@ export const typeDefs = `
     content: String
   }
 
-
   type Post{
     id: ID!
     title: String!

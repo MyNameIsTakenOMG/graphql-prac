@@ -4,6 +4,9 @@ export const Query = {
   posts: async (parent: any, args: any, context: Context) => {
     const prisma = context.prisma;
     return await prisma.post.findMany({
+      where: {
+        published: true,
+      },
       orderBy: [
         {
           createdAt: 'desc',
