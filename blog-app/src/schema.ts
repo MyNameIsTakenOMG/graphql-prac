@@ -2,7 +2,7 @@ export const typeDefs = `
   type Query{
     me: User
     posts: [Post!]!
-
+    profile(userId: ID!): Profile
   }
 
   type Mutation{
@@ -33,7 +33,6 @@ export const typeDefs = `
     id: ID!
     name: String!
     email: String!
-    profile: Profile!
     posts: [Post!]!
   }
   type Profile{
