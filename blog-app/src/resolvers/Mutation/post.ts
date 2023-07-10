@@ -1,5 +1,6 @@
 import { Post } from '@prisma/client';
 import { Context } from '../../index';
+import { canUserMutatePost } from '../../utils/canUserMutatePost';
 
 interface PostArgs {
   post: {
@@ -21,8 +22,15 @@ export const postResolvers = {
     args: PostArgs,
     context: Context
   ): Promise<PostPayloadType> => {
-    const prisma = context.prisma;
+    const { prisma, userInfo } = context;
     const { title, content } = args.post;
+    // if user is signed in
+    if (!userInfo) {
+      return {
+        userErrors: [{ message: 'not authenticated' }],
+        post: null,
+      };
+    }
     // validation
     if (!title || !content) {
       return {
@@ -35,7 +43,7 @@ export const postResolvers = {
       data: {
         title,
         content,
-        authorId: 1,
+        authorId: userInfo.userId,
       },
     });
     return {
@@ -49,13 +57,30 @@ export const postResolvers = {
     context: Context
   ): Promise<PostPayloadType> => {
     const { title, content } = post;
+    const { prisma, userInfo } = context;
+    // if user is signed in
+    if (!userInfo) {
+      return {
+        userErrors: [{ message: 'not authenticated' }],
+        post: null,
+      };
+    }
+    // if the user is the author of the post
+    const err = await canUserMutatePost({
+      userId: userInfo.userId,
+      postId: Number(postId),
+      prisma,
+    });
+    if (err) {
+      return err;
+    }
+
     if (!title && !content) {
       return {
         userErrors: [{ message: 'title or content is required' }],
         post: null,
       };
     }
-    const { prisma } = context;
     const existingPost = await prisma.post.findUnique({
       where: {
         id: Number(postId),
@@ -90,7 +115,24 @@ export const postResolvers = {
     { postId }: { postId: string },
     context: Context
   ): Promise<PostPayloadType> => {
-    const { prisma } = context;
+    const { prisma, userInfo } = context;
+    // if user is signed in
+    if (!userInfo) {
+      return {
+        userErrors: [{ message: 'not authenticated' }],
+        post: null,
+      };
+    }
+    // if the user is the author of the post
+    const err = await canUserMutatePost({
+      userId: userInfo.userId,
+      postId: Number(postId),
+      prisma,
+    });
+    if (err) {
+      return err;
+    }
+
     const post = await prisma.post.findUnique({
       where: {
         id: Number(postId),

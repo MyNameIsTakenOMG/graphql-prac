@@ -4,6 +4,7 @@ import { typeDefs } from './schema';
 import { Mutation, Query } from './resolvers';
 import { Prisma, PrismaClient } from '@prisma/client';
 import { DefaultArgs } from '@prisma/client/runtime';
+import { getUserFromToken } from './utils/getUserFromToken';
 
 const prisma = new PrismaClient();
 
@@ -22,6 +23,10 @@ export interface Context {
     Prisma.RejectOnNotFound | Prisma.RejectPerOperation | undefined,
     DefaultArgs
   >;
+  userInfo: {
+    userId: number;
+    email: string;
+  } | null;
 }
 
 const start = async () => {
@@ -29,9 +34,13 @@ const start = async () => {
     listen: {
       port: 4000,
     },
-    context: async ({ req, res }) => ({
-      prisma: prisma,
-    }),
+    context: async ({ req, res }: any): Promise<Context> => {
+      const userInfo = getUserFromToken(req.headers.authorization);
+      return {
+        prisma,
+        userInfo,
+      };
+    },
   });
   console.log(`🚀  Server ready at: ${url}`);
 };
