@@ -149,4 +149,74 @@ export const postResolvers = {
       post: post,
     };
   },
+  postPublish: async (
+    parent: any,
+    args: { postId: string },
+    context: Context
+  ): Promise<PostPayloadType> => {
+    const { prisma, userInfo } = context;
+    const { postId } = args;
+    // if user is signed in
+    if (!userInfo) {
+      return {
+        userErrors: [{ message: 'not authenticated' }],
+        post: null,
+      };
+    }
+    // if the user is the author of the post
+    const err = await canUserMutatePost({
+      userId: userInfo.userId,
+      postId: Number(postId),
+      prisma,
+    });
+    if (err) {
+      return err;
+    }
+    return {
+      userErrors: [],
+      post: await prisma.post.update({
+        where: {
+          id: Number(postId),
+        },
+        data: {
+          published: true,
+        },
+      }),
+    };
+  },
+  postUnPublish: async (
+    parent: any,
+    args: { postId: string },
+    context: Context
+  ): Promise<PostPayloadType> => {
+    const { prisma, userInfo } = context;
+    const { postId } = args;
+    // if user is signed in
+    if (!userInfo) {
+      return {
+        userErrors: [{ message: 'not authenticated' }],
+        post: null,
+      };
+    }
+    // if the user is the author of the post
+    const err = await canUserMutatePost({
+      userId: userInfo.userId,
+      postId: Number(postId),
+      prisma,
+    });
+    if (err) {
+      return err;
+    }
+    return {
+      userErrors: [],
+      post: await prisma.post.update({
+        where: {
+          id: Number(postId),
+        },
+        data: {
+          published: false,
+        },
+      }),
+    };
+  },
 };
