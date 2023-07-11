@@ -1,17 +1,62 @@
-import React, { useState } from "react";
-import { Modal, Button, Form } from "react-bootstrap";
+import { gql, useMutation } from '@apollo/client';
+import React, { useEffect, useState } from 'react';
+import { Modal, Button, Form } from 'react-bootstrap';
+
+const CREATE_POST = gql`
+  mutation CreatePost($title: String!, $content: String!) {
+    postCreate(title: $title, content: $content) {
+      post {
+        title
+        content
+        published
+        createdAt
+        user {
+          name
+        }
+      }
+      userErrors {
+        message
+      }
+    }
+  }
+`;
 
 export default function AddPostModal() {
   const [show, setShow] = useState(false);
+  const [error, setError] = useState(null);
+  const [createPost, { data, loading }] = useMutation(CREATE_POST);
 
   const handleClose = () => setShow(false);
   const handleShow = () => setShow(true);
 
-  const [content, setContent] = useState("");
-  const [title, setTitle] = useState("");
+  const [content, setContent] = useState('');
+  const [title, setTitle] = useState('');
 
-  const handleClick = () => {};
+  const handleClick = () => {
+    if (!content || !title) return;
+    else {
+      createPost({
+        variables: {
+          title,
+          content,
+        },
+      });
+      handleClose();
+    }
+  };
 
+  useEffect(() => {
+    if (data) {
+      if (data.postCreate.userErrors.length) {
+        setError(data.postCreate.userErrors[0].message);
+      }
+      if (data.signin.token) {
+        localStorage.setItem('token', data.signin.token);
+      }
+    }
+
+    return () => {};
+  }, [data]);
   return (
     <>
       <Button variant="primary" onClick={handleShow}>
@@ -54,6 +99,7 @@ export default function AddPostModal() {
           </Form>
         </Modal.Body>
         <Modal.Footer>
+          {error && <p>{error}</p>}
           <Button variant="secondary" onClick={handleClose}>
             Close
           </Button>
