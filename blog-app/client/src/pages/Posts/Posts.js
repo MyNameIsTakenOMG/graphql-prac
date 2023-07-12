@@ -17,7 +17,9 @@ const GET_POSTS = gql`
 `;
 
 export default function Posts() {
-  const { data, error, loading } = useQuery(GET_POSTS);
+  const { data, error, loading, refetch } = useQuery(GET_POSTS, {
+    fetchPolicy: 'network-only',
+  });
 
   if (error) {
     return <div>error page</div>;
